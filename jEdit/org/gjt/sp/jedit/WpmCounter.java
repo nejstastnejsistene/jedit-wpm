@@ -90,9 +90,9 @@ public class WpmCounter implements Runnable
 
     // Private instance fields.
     private StatusBar status;
-    private long startTime;
-    private long lastActivity;
-    private boolean active;
+    private volatile long startTime;
+    private volatile long lastActivity;
+    private volatile boolean active;
     private volatile int wordsCounted;
     private volatile int charactersCounted;
     private boolean lastCharWasSpace;
