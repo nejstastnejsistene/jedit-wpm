@@ -81,6 +81,9 @@ public class StatusBar extends JPanel implements WorkThreadProgressListener
 
 		MouseHandler mouseHandler = new MouseHandler();
 
+        statusBox = new Box(BoxLayout.X_AXIS);
+        panel.add(BorderLayout.WEST, statusBox);
+
 		caretStatus = new ToolTipLabel();
 		caretStatus.setName("caretStatus");
 		caretStatus.setToolTipText(jEdit.getProperty("view.status.caret-tooltip"));
@@ -106,6 +109,10 @@ public class StatusBar extends JPanel implements WorkThreadProgressListener
 		lineSepWidget = _getWidget("lineSep");
 	} //}}}
 
+    /* pajohnson@email.wm.edu
+     * I've changed the construction of the status bar to having
+     * a box to the WEST containing the caret and wpm status tooltips.
+     */
 	//{{{ propertiesChanged() method
 	public void propertiesChanged()
 	{
@@ -113,8 +120,15 @@ public class StatusBar extends JPanel implements WorkThreadProgressListener
 		Color bg = jEdit.getColorProperty("view.status.background");
 
 		showCaretStatus = jEdit.getBooleanProperty("view.status.show-caret-status");
+        /* pajohnson@email.wm.edu
+         * Get the new values of the various wpm options, and update the
+         * stop delay and refresh rate with the counter itself.
+         */
 		showWpm = jEdit.getBooleanProperty("view.status.show-wpm");
 		showCpm = jEdit.getBooleanProperty("view.status.show-cpm");
+        WpmCounter wpmCounter = view.getWpmCounter();
+        wpmCounter.setStopDelay(Integer.parseInt(jEdit.getProperty("view.status.wpm-stop-delay")));
+        wpmCounter.setRefreshRate(Integer.parseInt(jEdit.getProperty("view.status.wpm-refresh-rate")));
 
 		panel.setBackground(bg);
 		panel.setForeground(fg);
@@ -125,7 +139,7 @@ public class StatusBar extends JPanel implements WorkThreadProgressListener
          * did for caretStatus.
          */
         wpmStatus.setBackground(bg);
-        wpmStatus.setForeground(bg);
+        wpmStatus.setForeground(fg);
 		message.setBackground(bg);
 		message.setForeground(fg);
 
@@ -134,9 +148,14 @@ public class StatusBar extends JPanel implements WorkThreadProgressListener
 		//UIManager.getFont("Label.font");
 		FontMetrics fm = getFontMetrics(font);
 
+        /* pajohnson@email.wm.edu
+         * Emptying the status box before adding them back.
+         */
+        statusBox.removeAll();
+
 		if (showCaretStatus)
 		{
-			panel.add(BorderLayout.WEST,caretStatus);
+			statusBox.add(caretStatus);
 
 			caretStatus.setFont(font);
 
@@ -145,25 +164,22 @@ public class StatusBar extends JPanel implements WorkThreadProgressListener
 			caretStatus.setPreferredSize(dim);
 			updateCaretStatus();
 		}
-		else
-			panel.remove(caretStatus);
+
+        statusBox.add(Box.createGlue());
 
         /* pajohnson@email.wm.edu
-         * Add the wpm tooltop object in the same way as
-         * caretStatus was added.
+         * Add the wpm tooltop object to the status bar.
          */
         if (showWpm || showCpm)
         {
-            panel.add(BorderLayout.WEST, wpmStatus);
+            statusBox.add(wpmStatus);
 
             wpmStatus.setFont(font);
 
             Dimension dim = new Dimension(fm.stringWidth(wpmTestStr),
                     fm.getHeight());
             wpmStatus.setPreferredSize(dim);
-            updateWpmStatus();
-        } else
-            panel.remove(wpmStatus);
+        }
 
 		String statusBar = jEdit.getProperty("view.status");
 		if (!StandardUtilities.objectsEqual(currentBar, statusBar))
@@ -422,16 +438,22 @@ public class StatusBar extends JPanel implements WorkThreadProgressListener
 
     /* pajohnson@email.wm.edu
      * This function is responsible for updating the wpm display on
-     * the status bar.
+     * the status bar. It is passed the wpm and cpm as arguments,
+     * and then should decide whether and how to display them. The no
+     * arguments verion removes the display.
      */
 	//{{{ updateWpmStatus() method
-    public void updateWpmStatus()
+    public void updateWpmStatus() {
+        wpmStatus.setText(" ");
+    }
+
+    public void updateWpmStatus(int wpm, int cpm)
     {
-        if (showWpm || showCpm) {
+        if ((showWpm && wpm >= 0) || (showCpm && cpm >= 0)) {
 
             if (showWpm) {
                 buf.append("WPM: ");
-                //TODO
+                buf.append(Integer.toString(wpm));
                 if (showCpm) {
                     // Append separator if both are being shown.
                     buf.append(" | ");
@@ -440,10 +462,11 @@ public class StatusBar extends JPanel implements WorkThreadProgressListener
 
             if (showCpm) {
                 buf.append("CPM: ");
-                //TODO
+                buf.append(Integer.toString(cpm));
             }
 
             wpmStatus.setText(buf.toString());
+            buf.setLength(0);
         }
     } //}}}
 
@@ -470,10 +493,11 @@ public class StatusBar extends JPanel implements WorkThreadProgressListener
 	private final View view;
 	private final JPanel panel;
 	private final Box box;
-	private final ToolTipLabel caretStatus;
     /* pajohnson@email.wm.edu
-     * Declaring wpm tooltop.
+     * Declaring wpm tooltop, and box for both tooltips.
      */
+    private final Box statusBox;
+	private final ToolTipLabel caretStatus;
 	private final ToolTipLabel wpmStatus;
 	private Component messageComp;
 	private final JLabel message;

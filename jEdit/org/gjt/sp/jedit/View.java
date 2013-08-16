@@ -444,6 +444,18 @@ public class View extends JFrame implements EBComponent, InputHandlerProvider
 		return status;
 	} //}}}
 
+    /* pajohnson@email.wm.edu
+     * A simple getter method to get the wpm counter.
+     */
+    //{{{ getWpmCounter() method
+    /**
+     * Returns the WPM counter.
+     */
+    public WpmCounter getWpmCounter()
+    {
+        return wpmCounter;
+    } //}}}
+
 	//{{{ quickIncrementalSearch() method
 	/**
 	 * Quick search.
@@ -1348,6 +1360,10 @@ public class View extends JFrame implements EBComponent, InputHandlerProvider
 		toolBarManager = new ToolBarManager(topToolBars, bottomToolBars);
 
 		status = new StatusBar(this);
+        /* pajohnson@email.wm.edu
+         * Creating our WpmCounter instance with the status bar.
+         */
+        wpmCounter = new WpmCounter(status);
 
 		inputHandler = new DefaultInputHandler(this,(DefaultInputHandler)
 			jEdit.getInputHandler());
@@ -1556,6 +1572,10 @@ public class View extends JFrame implements EBComponent, InputHandlerProvider
 	private final BufferSet localBufferSet;
 
 	private StatusBar status;
+    /* pajohnson@email.wm.edu
+     * Declaring wpmCounter.
+     */
+    private WpmCounter wpmCounter;
 
 	private InputHandler inputHandler;
 	private Macros.Recorder recorder;

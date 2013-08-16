@@ -217,11 +217,15 @@ public class JEditTextArea extends TextArea
 		}
 	} //}}}
 
+    /* pajohnson@email.wm.edu
+     * Count the character for WPM, and update the javadoc.
+     */
 	//{{{ userInput() method
 	/**
 	 * Handles the insertion of the specified character. It performs the
 	 * following operations in addition to TextArea#userInput(char):
 	 * <ul>
+     * <li>Count the character for determining WPM
 	 * <li>Inserting a space with automatic abbrev expansion enabled will
 	 * try to expand the abbrev
 	 * </ul>
@@ -235,6 +239,8 @@ public class JEditTextArea extends TextArea
 		if(ch == ' ' && Abbrevs.getExpandOnInput()
 			&& Abbrevs.expandAbbrev(view,false))
 			return;
+
+        view.getWpmCounter().countChar(ch);
 
 		super.userInput(ch);
 	} //}}}
