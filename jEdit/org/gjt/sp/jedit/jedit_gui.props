@@ -2070,15 +2070,16 @@ options.status.caret.bufferlength=Show length of file
 # pajohnson@email.wm.edu
 # I'm defining here default values for all new gui components, so that
 # the menu can be easily updated later by modifying these values.
+view.status.wpm-tooltip=WPM: <words per minute> | CPM: <characters per minute>
 options.status.wpm.title=WPM options:
 options.status.wpm.showWpm=Show number of words per minute (WPM)
-options.status.show-wpm=false
+view.status.show-wpm=false
 options.status.wpm.showCpm=Show number of characters per minute (CPM)
-options.status.show-cpm=false
+view.status.show-cpm=false
 options.status.wpm.stopDelay=Elapsed miliseconds before stopping updating WPM and CPM
-options.status.wpm-stop-delay=2000
+view.status.wpm-stop-delay=2000
 options.status.wpm.refreshRate=Refresh rate (Miliseconds)
-options.status.wpm-refresh-rate=1000
+view.status.wpm-refresh-rate=1000
 #}}}
 
 #{{{ Syntax Highlighting pane

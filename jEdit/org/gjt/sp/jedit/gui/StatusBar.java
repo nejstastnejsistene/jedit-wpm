@@ -40,12 +40,16 @@ import org.gjt.sp.jedit.gui.statusbar.ToolTipLabel;
 import org.gjt.sp.util.*;
 //}}}
 
+/* pajohnson@email.wm.edu
+ * Added that the status bar displays the WPM and CPM to the javadoc.
+ */
 /**
  * The status bar used to display various information to the user.<p>
  *
  * Currently, it is used for the following:
  * <ul>
  * <li>Displaying caret position information
+ * <li>Displaying words per minute and characters per minute
  * <li>Displaying {@link InputHandler#readNextChar(String,String)} prompts
  * <li>Displaying {@link #setMessage(String)} messages
  * <li>Displaying I/O progress
@@ -82,6 +86,13 @@ public class StatusBar extends JPanel implements WorkThreadProgressListener
 		caretStatus.setToolTipText(jEdit.getProperty("view.status.caret-tooltip"));
 		caretStatus.addMouseListener(mouseHandler);
 
+        /* pajohnson@email.wm.edu
+         * Add a tooltip to explain WPM and CPM info.
+         */
+        wpmStatus = new ToolTipLabel();
+        wpmStatus.setName("wpmStatus");
+        wpmStatus.setToolTipText(jEdit.getProperty("view.status.wpm-tooltop"));
+
 		message = new JLabel(" ");
 		setMessageComponent(message);
 
@@ -102,11 +113,19 @@ public class StatusBar extends JPanel implements WorkThreadProgressListener
 		Color bg = jEdit.getColorProperty("view.status.background");
 
 		showCaretStatus = jEdit.getBooleanProperty("view.status.show-caret-status");
+		showWpm = jEdit.getBooleanProperty("view.status.show-wpm");
+		showCpm = jEdit.getBooleanProperty("view.status.show-cpm");
 
 		panel.setBackground(bg);
 		panel.setForeground(fg);
 		caretStatus.setBackground(bg);
 		caretStatus.setForeground(fg);
+        /* pajohnson@email.wm.edu
+         * Set the background and foreground of wpmStatus, just like they
+         * did for caretStatus.
+         */
+        wpmStatus.setBackground(bg);
+        wpmStatus.setForeground(bg);
 		message.setBackground(bg);
 		message.setForeground(fg);
 
@@ -128,6 +147,23 @@ public class StatusBar extends JPanel implements WorkThreadProgressListener
 		}
 		else
 			panel.remove(caretStatus);
+
+        /* pajohnson@email.wm.edu
+         * Add the wpm tooltop object in the same way as
+         * caretStatus was added.
+         */
+        if (showWpm || showCpm)
+        {
+            panel.add(BorderLayout.WEST, wpmStatus);
+
+            wpmStatus.setFont(font);
+
+            Dimension dim = new Dimension(fm.stringWidth(wpmTestStr),
+                    fm.getHeight());
+            wpmStatus.setPreferredSize(dim);
+            updateWpmStatus();
+        } else
+            panel.remove(wpmStatus);
 
 		String statusBar = jEdit.getProperty("view.status");
 		if (!StandardUtilities.objectsEqual(currentBar, statusBar))
@@ -384,6 +420,33 @@ public class StatusBar extends JPanel implements WorkThreadProgressListener
  		}			
 	} //}}}
 
+    /* pajohnson@email.wm.edu
+     * This function is responsible for updating the wpm display on
+     * the status bar.
+     */
+	//{{{ updateWpmStatus() method
+    public void updateWpmStatus()
+    {
+        if (showWpm || showCpm) {
+
+            if (showWpm) {
+                buf.append("WPM: ");
+                //TODO
+                if (showCpm) {
+                    // Append separator if both are being shown.
+                    buf.append(" | ");
+                }
+            }
+
+            if (showCpm) {
+                buf.append("CPM: ");
+                //TODO
+            }
+
+            wpmStatus.setText(buf.toString());
+        }
+    } //}}}
+
 	//{{{ updateBufferStatus() method
 	public void updateBufferStatus()
 	{
@@ -408,6 +471,10 @@ public class StatusBar extends JPanel implements WorkThreadProgressListener
 	private final JPanel panel;
 	private final Box box;
 	private final ToolTipLabel caretStatus;
+    /* pajohnson@email.wm.edu
+     * Declaring wpm tooltop.
+     */
+	private final ToolTipLabel wpmStatus;
 	private Component messageComp;
 	private final JLabel message;
 	private final Widget modeWidget;
@@ -425,10 +492,20 @@ public class StatusBar extends JPanel implements WorkThreadProgressListener
 	private final Segment seg = new Segment();
 
 	private boolean showCaretStatus;
+    /* pajohnson@email.wm.edu
+     * Flags for whether or not to display WPM and CPM.
+     */
+    private boolean showWpm;
+    private boolean showCpm;
 	//}}}
 
 	//static final String caretTestStr = "99999999,9999,999-999 99%";
 	static final String caretTestStr = "9999,999-999 (99999999/99999999)";
+    /* pajohnson@email.wm.edu
+     * This string is for approximating the maximum size that the wpm
+     * info will take up on the status bar.
+     */
+    static final String wpmTestStr = "WPM: 9999 | CPM: 9999";
 
 	//{{{ getWidget() method
 	private Widget getWidget(String name)
