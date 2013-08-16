@@ -25,12 +25,16 @@ updating of the status bar is in the StatusBar instead, where it belongs. \\
 One limitation is that it calculates the WPM based on the cumulative time
 since it began updating, so if elapsedTimeBeforeStopUpdating is too high, the
 WPM might be inaccurate because it fails to reflect the time that you weren't
-typing. Another possible limitation is that it registers words as the first
+typing. \\
+
+Another possible limitation is that it registers words as the first
 space character after one or more non-space characters, so your WPM is
 dependent on the length of the words you are typing. This is of course the
 intuitive definition of WPM, but I have seen other WPM counters that define
 a specific length of characters to represent a word to make WPM a more
 standardized measurment. \\
+
+A third limitation is that the WPM will not actually stop updating until the next time that the WPM would have been drawn to the status bar. This is not an issue for reasonable values, but if the refresh rate is significantly longer than elapsedTimeBeforeStopUpdating then the WPM display will not go away when expected. This could be corrected by sleeping for shorter intervals to check whether to stop more frequently. \\
 
 Here are the diffs of my code: I apologize that some of the longer lines are cut off.
 \begin{verbatim}
