@@ -126,6 +126,30 @@ public class StatusBarOptionPane extends AbstractOptionPane
 		optionsPanel.addComponent(showCaretOffset);
 		optionsPanel.addComponent(showCaretBufferLength);
 
+        /* pajohnson@email.wm.edu
+         * I'm instantiating the various gui components here, opting for
+         * default values from properties if available. I also add them to
+         * the panel. This is all done in a way similar to how other gui
+         * components were added.
+         */
+		optionsPanel.addSeparator();
+		optionsPanel.addComponent(new JLabel(jEdit.getProperty("options.status.wpm.title", "WPM options:")));
+		showWpm = new JCheckBox(jEdit.getProperty("options.status.wpm.showWpm", "Show number of words per minute (WPM)"),
+			jEdit.getBooleanProperty("view.status.show-wpm", true));
+        showWpm.setName("showWpm");
+        optionsPanel.addComponent(showWpm);
+		showCpm = new JCheckBox(jEdit.getProperty("options.status.wpm.showCpm", "Show number of characters per minute (CPM)"),
+			jEdit.getBooleanProperty("view.status.show-cpm", true));
+        showCpm.setName("showCpm");
+        optionsPanel.addComponent(showCpm);
+        optionsPanel.addComponent(new JLabel(jEdit.getProperty("options.status.wpm.stopDelay", "Elapsed miliseconds before stopping updating WPM and CPM")));
+        wpmStopDelay = new JTextField(jEdit.getProperty("options.status.wpm-stop-delay", "2000"));
+        wpmStopDelay.setName("wpmStopDelay");
+        optionsPanel.addComponent(wpmStopDelay);
+        optionsPanel.addComponent(new JLabel(jEdit.getProperty("options.status.wpm.refreshRate", "Refresh rate (Miliseconds--)")));
+        wpmRefreshRate= new JTextField(jEdit.getProperty("options.status.wpm-refresh-rate", "1000"));
+        wpmRefreshRate.setName("wpmRefreshRate");
+        optionsPanel.addComponent(wpmRefreshRate);
 		//}}}
 
 
@@ -250,6 +274,11 @@ public class StatusBarOptionPane extends AbstractOptionPane
 	private JCheckBox showCaretVirtual;
 	private JCheckBox showCaretOffset;
 	private JCheckBox showCaretBufferLength;
+
+    private JCheckBox showWpm;
+    private JCheckBox showCpm;
+    private JTextField wpmStopDelay;
+    private JTextField wpmRefreshRate;
 	//}}}
 
 	//{{{ updateButtons() method
