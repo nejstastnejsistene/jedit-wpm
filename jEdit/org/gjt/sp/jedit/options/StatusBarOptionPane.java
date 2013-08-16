@@ -143,11 +143,11 @@ public class StatusBarOptionPane extends AbstractOptionPane
         showCpm.setName("showCpm");
         optionsPanel.addComponent(showCpm);
         optionsPanel.addComponent(new JLabel(jEdit.getProperty("options.status.wpm.stopDelay", "Elapsed miliseconds before stopping updating WPM and CPM")));
-        wpmStopDelay = new JTextField(jEdit.getProperty("options.status.wpm-stop-delay", "2000"));
+        wpmStopDelay = new JTextField(jEdit.getProperty("view.status.wpm-stop-delay", "2000"));
         wpmStopDelay.setName("wpmStopDelay");
         optionsPanel.addComponent(wpmStopDelay);
         optionsPanel.addComponent(new JLabel(jEdit.getProperty("options.status.wpm.refreshRate", "Refresh rate (Miliseconds--)")));
-        wpmRefreshRate= new JTextField(jEdit.getProperty("options.status.wpm-refresh-rate", "1000"));
+        wpmRefreshRate= new JTextField(jEdit.getProperty("view.status.wpm-refresh-rate", "1000"));
         wpmRefreshRate.setName("wpmRefreshRate");
         optionsPanel.addComponent(wpmRefreshRate);
 		//}}}
