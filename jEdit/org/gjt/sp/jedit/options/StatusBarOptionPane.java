@@ -251,6 +251,13 @@ public class StatusBarOptionPane extends AbstractOptionPane
 		jEdit.setBooleanProperty("view.status.show-caret-offset", showCaretOffset.isSelected());
 		jEdit.setBooleanProperty("view.status.show-caret-bufferlength", showCaretBufferLength.isSelected());
 
+        /* pajohnson@email.wm.edu
+         * Writing the code to save our new wpm values.
+         */
+        jEdit.setBooleanProperty("view.status.show-wpm", showWpm.isSelected());
+        jEdit.setBooleanProperty("view.status.show-cpm", showCpm.isSelected());
+        jEdit.setProperty("view.status.wpm-stop-delay", wpmStopDelay.getText());
+        jEdit.setProperty("view.status.wpm-refresh-rate", wpmRefreshRate.getText());
 	} //}}}
 
 	//{{{ Private members
@@ -275,6 +282,9 @@ public class StatusBarOptionPane extends AbstractOptionPane
 	private JCheckBox showCaretOffset;
 	private JCheckBox showCaretBufferLength;
 
+    /* pajohnson@email.wm.edu
+     * Declaring the gui components we're going to use.
+     */
     private JCheckBox showWpm;
     private JCheckBox showCpm;
     private JTextField wpmStopDelay;
