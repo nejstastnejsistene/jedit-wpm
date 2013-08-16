@@ -40,28 +40,45 @@ public class WpmCounter implements Runnable
             wordsCounted += 1;
 
         lastCharWasSpace = isSpace;
-        lastActivity = new Date().getTime();
+
+        long now = new Date().getTime();
+
+        // If going from inactive to active, save the start time
+        // and reset the counts.
+        if (!active)
+        {
+            startTime = now;
+            wordsCounted = 0;
+            charactersCounted = 0;
+        }
+
+        active = true;
+        lastActivity = now;
     }
 
     public void run()
     {
-        wordsCounted = 0;
-        charactersCounted = 0;
-
         while (true)
         {
-            // Clear the status because we haven't been typing in a while.
-            if (new Date().getTime() - lastActivity > stopDelay)
-                status.updateWpmStatus();
-            else
-            {
-                int wpm = wordsCounted * 60000 / refreshRate;
-                int cpm = charactersCounted * 60000 / refreshRate;
+            if (active) {
+                long now = new Date().getTime();
 
-                // Update the status bar and clear the count.
-                status.updateWpmStatus(wpm, cpm);
-                wordsCounted = 0;
-                charactersCounted = 0;
+                // Clear the status because we haven't been typing in a while.
+                if (now - lastActivity > stopDelay)
+                {
+                    status.updateWpmStatus();
+                    active = false;
+                }
+                else
+                {
+                    // Calculate the wpm and cpm.
+                    double factor = (now - startTime) / 60000.0;
+                    int wpm = (int)(wordsCounted / factor);
+                    int cpm = (int)(charactersCounted / factor);
+
+                    // Update the status bar and clear the count.
+                    status.updateWpmStatus(wpm, cpm);
+                }
             }
 
             try
@@ -73,11 +90,13 @@ public class WpmCounter implements Runnable
 
     // Private instance fields.
     private StatusBar status;
+    private long startTime;
     private long lastActivity;
+    private boolean active;
     private volatile int wordsCounted;
     private volatile int charactersCounted;
+    private boolean lastCharWasSpace;
     private int stopDelay;
     private int refreshRate;
-    private boolean lastCharWasSpace;
 
 }
