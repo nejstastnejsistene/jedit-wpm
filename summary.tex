@@ -10,7 +10,7 @@
 \maketitle
 
 I implemented all four features.
-The core of the feature is a new class, WpmCounter. WpmCounter keeps track
+Its core is a new class, WpmCounter. WpmCounter keeps track
 of the time that the last input was receieved to determine when to stop
 updating, and also the time that it started updating to aid in the
 calculations. Inside a thread, WpmCounter repeatedly checks if it should stop
@@ -22,12 +22,12 @@ regularly updated independently from the rest of the system. WpmCounter is
 intended solely for calculating the WPM, and the code that does the actual
 updating of the status bar is in the StatusBar instead, where it belongs. \\
 
-One limitation is that it calculates the WPM based on the cumulative time
-since it began updating, so if elapsedTimeBeforeStopUpdating is too high, the
-WPM might be inaccurate because it fails to reflect the time that you weren't
-typing. \\
+One limitation is that WpmCounter calculates the WPM based on the cumulative
+time since it began updating, so if elapsedTimeBeforeStopUpdating is too high,
+the WPM might be inaccurate because it fails to reflect the time that you
+weren't typing. \\
 
-Another possible limitation is that it registers words as the first
+Another limitation is that it registers words as the first
 space character after one or more non-space characters, so your WPM is
 dependent on the length of the words you are typing. This is of course the
 intuitive definition of WPM, but I have seen other WPM counters that define
