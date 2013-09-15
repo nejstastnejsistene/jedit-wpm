@@ -1,4 +1,4 @@
 jedit-wpm
 =========
 
-Programming challenge for semaru application.
+Programming challenge for SEMERU application.
